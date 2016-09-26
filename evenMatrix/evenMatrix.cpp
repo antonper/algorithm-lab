@@ -34,7 +34,7 @@ void solve() {
     }
 
     int lineSum[n];
-    memset(lineSum, 0, n);
+    memset(lineSum, 0, sizeof(n));
     answer = 0;
 
     for (int i = 0; i < n; ++i) {
@@ -56,6 +56,7 @@ void solve() {
         countEven = 0;
         countOdd = 0;
     }
+
     cout << answer << endl;
 
 }
