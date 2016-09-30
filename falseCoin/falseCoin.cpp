@@ -33,7 +33,7 @@ void doTest() {
     onlyEquals = true;
     cin >> n;
     int k;
-    memset(coins, 0, 1001);
+    memset(coins, 0, sizeof(coins));
     cin >> k;
     int p = 0;
     for (int i = 0; i < k; ++i) {
@@ -68,7 +68,7 @@ void doTest() {
     int count_max = 0;
     if (!onlyEquals) {
         for (int l = 1; l < n + 1; ++l) {
-            if (coins[l] != 1111 && coins[l] != 0) {
+            if (coins[l] != 7777 && coins[l] != 0) {
                 if (abs(coins[l]) > max) {
                     foundCoin = l;
                     max = abs(coins[l]);
@@ -104,11 +104,11 @@ void doTest() {
 void changeWeight(int bigger[], int smaller[], int p) {
     onlyEquals = false;
     for (int i = 0; i < p; ++i) {
-        if (coins[bigger[i]] != 1111) {
+        if (coins[bigger[i]] != 7777) {
             coins[bigger[i]]++;
         }
 
-        if (coins[smaller[i]] != 1111) {
+        if (coins[smaller[i]] != 7777) {
             coins[smaller[i]]--;
         }
     }
@@ -116,8 +116,8 @@ void changeWeight(int bigger[], int smaller[], int p) {
 
 void equal(int bigger[], int smaller[], int p) {
     for (int i = 0; i < p; ++i) {
-        coins[bigger[i]] = 1111;
-        coins[smaller[i]] = 1111;
+        coins[bigger[i]] = 7777;
+        coins[smaller[i]] = 7777;
     }
 }
 
