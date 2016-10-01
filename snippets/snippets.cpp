@@ -1,82 +1,89 @@
 #include<iostream>
 #include <vector>
+#include <queue>
+#include <set>
+#include <limits>
 
 
 using namespace std;
 
-void solve();
+class PairCompare {
+public:
+    bool operator()(pair<int, int> a, pair<int, int> b) {
+        return a.first > b.first;
+    }
+};
 
-int minOfIndex(vector<vector<int> > words);
 
 int main() {
+    cin.sync_with_stdio(false);
+    cout.sync_with_stdio(false);
+
     int t;
     cin >> t;
-    for (int i = 0; i < t; ++i) {
-        solve();
-    }
+    for (int test = 0; test < t; ++test) {
+        int word_count;
+        cin >> word_count;
 
+        //read words occurrences number
+        vector<int> occurs(word_count, 0);
+        for (int j = 0; j < word_count; ++j) {
+            cin >> occurs[j];
+        }
 
-}
+        priority_queue<pair<int, int>, vector<pair<int, int> >, PairCompare> locs;
 
-void solve() {
-    //read data
-    int n;
-    int minWord;
-    int minIndex;
-    int maxIndex = 0;
-    cin >> n;
-    vector<vector<int> > words(n);
-    for (int i = 0; i < n; ++i) {
-        unsigned int m;
-        cin >> m;
-        words[i].resize(m);
-    }
-    for (int j = 0; j < n; ++j) {
-        for (int i = 0; i < words[j].size(); ++i) {
-            cin >> words[j][i];
-            if (i == 0) {
-                maxIndex = max(maxIndex, words[j][0]);
+        //read data
+        for (int word_index = 0; word_index < word_count; ++word_index) {
+            for (int j = 0; j < occurs.at(word_index); ++j) {
+                int l;
+                cin >> l;
+                locs.push(make_pair(l, word_index));
             }
         }
-    }
 
-    minWord = minOfIndex(words);
-    minIndex = words[minWord][0];
 
-    int bestDistance = maxIndex - minIndex + 1;
-    bool limitFound = false;
+        //find first range with all words
+        vector<int> first_set_loc(word_count, -1);
+        set<pair<int, int> > words;
+        int words_found = 0;
+        int last_loc = numeric_limits<int>::min();
+        while (word_count != words_found && !locs.empty()) {
+            pair<int, int> cur = locs.top();
+            locs.pop();
 
-    while (!limitFound) {
+            if (first_set_loc.at(cur.second) == -1) {
+                words_found++;
+            } else {
+                words.erase(make_pair(first_set_loc.at(cur.second), cur.second));
+            }
 
-        if (words[minWord].size() <= 1) {
-            limitFound = true;
-        } else {
-            words[minWord].erase(words[minWord].begin());
-            maxIndex = max(maxIndex, words[minWord][0]);
-            minWord = minOfIndex(words);
-            minIndex = words[minWord][0];
-            bestDistance = min(bestDistance, maxIndex - minIndex + 1);
+            first_set_loc.at(cur.second) = cur.first;
+            words.insert(cur);
+            last_loc = cur.first;
         }
+
+        int min_dist = last_loc - words.begin()->first;
+
+        while (!locs.empty()) {
+            pair<int, int> cur = locs.top();
+            locs.pop();
+
+            words.erase(make_pair(first_set_loc.at(cur.second), cur.second));
+            first_set_loc.at(cur.second) = cur.first;
+            words.insert(cur);
+
+            int d = cur.first - words.begin()->first;
+            min_dist = min(d, min_dist);
+        }
+        cout << min_dist + 1 << endl;
+
+
     }
-
-    cout << bestDistance << endl;
-    return;
-
-
 }
 
-int minOfIndex(vector<vector<int> > words) {
-    int minIndex = words[0][0];
-    int wordNumber = 0;
-    for (int i = 0; i < words.size(); ++i) {
 
-        if (words[i][0] < minIndex) {
-            minIndex = words[i][0];
-            wordNumber = i;
-        }
-    }
-    return wordNumber;
-}
+
 
 
 
